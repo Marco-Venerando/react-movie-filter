@@ -15,20 +15,28 @@ function App() {
   const [filteredMovies, setFilteredMovies] = useState(initialMovies);
   const [selectedGenre, setSelectedGenre] = useState("Tutti");
 
+  const [selectedtitle, setSelectedtitle] = useState("");
+
   // stati del form
   const [newTitle, setNewTitle] = useState("");
   const [newGenre, setNewGenre] = useState("");
 
   // filtro dinamico
   useEffect(() => {
-    if (selectedGenre === "Tutti") {
-      setFilteredMovies(movies);
-    } else {
-      const filtered = movies.filter((movie) => movie.genre === selectedGenre);
-      setFilteredMovies(filtered);
-    }
-  }, [selectedGenre, movies]);
+    let result = movies;
 
+    if (selectedGenre !== "Tutti") {
+      result = result.filter((movie) => movie.genre === selectedGenre);
+    }
+
+    if (selectedtitle.trim() !== "") {
+      result = result.filter((movie) =>
+        movie.title.toLowerCase().includes(selectedtitle.toLowerCase()),
+      );
+    }
+
+    setFilteredMovies(result);
+  }, [selectedGenre, selectedtitle, movies]);
   // submit form
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -85,6 +93,13 @@ function App() {
         <option value="Romantico">Romantico</option>
         <option value="Azione">Azione</option>
       </select>
+
+      <input
+        type="text"
+        placeholder="Titolo film"
+        value={selectedtitle}
+        onChange={(e) => setSelectedtitle(e.target.value)}
+      />
 
       {/* LISTA */}
       <ul>
